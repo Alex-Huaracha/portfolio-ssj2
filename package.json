@@ -15,6 +15,7 @@
     "format:check": "prettier --check **/*.{ts,tsx,js,jsx,css,astro,md,mdx,json} --ignore-path .gitignore"
   },
   "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
     "@astrojs/react": "^5.0.4",
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
