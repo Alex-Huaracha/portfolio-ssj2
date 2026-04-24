@@ -2,7 +2,7 @@ export const profile = {
   name: 'Alex Huaracha',
   initials: 'AH',
   handle: '@alexhuaracha',
-  role: 'Software Architect in training',
+  role: 'Software Engineer',
 
   location: 'Arequipa, PE',
   timezone: 'America/Lima',
