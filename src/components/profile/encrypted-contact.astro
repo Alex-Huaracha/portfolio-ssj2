@@ -1,0 +1,43 @@
+---
+interface Props {
+  value: string;
+  prefix: 'mailto:' | 'tel:';
+  class?: string;
+  placeholder?: string;
+}
+
+const {
+  value,
+  prefix,
+  class: className,
+  placeholder = '●●●●●●●●',
+} = Astro.props;
+
+const encodedValue = Buffer.from(value).toString('base64');
+const encodedHref = Buffer.from(prefix + value).toString('base64');
+---
+
+<a
+  href="#"
+  data-encrypted
+  data-value={encodedValue}
+  data-href={encodedHref}
+  class={className}
+  rel="nofollow"
+>
+  {placeholder}
+</a>
+
+<script>
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-encrypted]')
+    .forEach((el) => {
+      const value = el.dataset.value;
+      const href = el.dataset.href;
+      if (value) el.textContent = atob(value);
+      if (href) el.href = atob(href);
+      el.removeAttribute('data-encrypted');
+      el.removeAttribute('data-value');
+      el.removeAttribute('data-href');
+    });
+</script>

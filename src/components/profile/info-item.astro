@@ -1,0 +1,36 @@
+---
+import { Icon } from 'astro-icon/components';
+import { cn } from '@/lib/utils';
+
+interface Props {
+  icon: string;
+  href?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const { icon, href, external, class: className } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const linkProps = href
+  ? {
+      href,
+      ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {}),
+    }
+  : {};
+---
+
+<Tag
+  class={cn(
+    'flex items-center gap-3',
+    href && 'transition hover:text-foreground',
+    className,
+  )}
+  {...linkProps}
+>
+  <div
+    class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-muted-foreground/15 bg-muted ring-1 ring-border ring-offset-1 ring-offset-background"
+  >
+    <Icon name={icon} class="size-4 text-muted-foreground" />
+  </div>
+  <slot />
+</Tag>

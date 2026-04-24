@@ -1,7 +1,15 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import ProfileCard from '../components/profile/profile-card.astro';
+import ProfileHeader from '../components/profile/profile-header.astro';
+import ProfileInfo from '../components/profile/profile-info.astro';
+import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Portfolio">
-    <!-- design pending — see design-explorations/ -->
+<Layout title="Alex Huaracha">
+  <div class="mx-auto w-full max-w-3xl px-4 pt-24 pb-12 sm:px-0">
+    <ProfileCard>
+      <ProfileHeader />
+      <ProfileInfo />
+    </ProfileCard>
+  </div>
 </Layout>

@@ -1,0 +1,80 @@
+---
+interface Props {
+  ownerTimezone: string;
+}
+
+const { ownerTimezone } = Astro.props;
+---
+
+<span class="font-mono" data-viewer-clock data-owner-tz={ownerTimezone}>
+  <span data-time>--:--</span>
+  <span class="text-muted-foreground/60">
+    // <span data-delta>—</span>
+  </span>
+</span>
+
+<script>
+  function getOffsetMinutes(timeZone: string, date: Date): number {
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      timeZoneName: 'shortOffset',
+    });
+    const part = dtf.formatToParts(date).find((p) => p.type === 'timeZoneName');
+    if (!part) return 0;
+    const match = part.value.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/);
+    if (!match) return 0;
+    const [, signChar, hoursStr = '0', minutesStr = '0'] = match;
+    const sign = signChar === '-' ? -1 : 1;
+    return sign * (parseInt(hoursStr, 10) * 60 + parseInt(minutesStr, 10));
+  }
+
+  function formatDelta(deltaMinutes: number): string {
+    if (deltaMinutes === 0) return 'same time';
+    const direction = deltaMinutes > 0 ? 'ahead' : 'behind';
+    const abs = Math.abs(deltaMinutes);
+    const h = Math.floor(abs / 60);
+    const m = abs % 60;
+    const parts = [];
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    return `${parts.join(' ')} ${direction}`;
+  }
+
+  function update(root: HTMLElement) {
+    const ownerTz = root.dataset.ownerTz;
+    if (!ownerTz) return;
+    const now = new Date();
+
+    const timeEl = root.querySelector<HTMLElement>('[data-time]');
+    const deltaEl = root.querySelector<HTMLElement>('[data-delta]');
+
+    if (timeEl) {
+      timeEl.textContent = new Intl.DateTimeFormat([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(now);
+    }
+
+    if (deltaEl) {
+      const viewerOffset = -now.getTimezoneOffset();
+      const ownerOffset = getOffsetMinutes(ownerTz, now);
+      deltaEl.textContent = formatDelta(viewerOffset - ownerOffset);
+    }
+  }
+
+  function init() {
+    document
+      .querySelectorAll<HTMLElement>('[data-viewer-clock]')
+      .forEach((el) => {
+        update(el);
+        setInterval(() => update(el), 30_000);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

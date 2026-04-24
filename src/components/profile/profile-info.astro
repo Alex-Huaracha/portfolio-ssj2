@@ -1,0 +1,40 @@
+---
+import { profile } from '../../data/profile';
+import EncryptedContact from './encrypted-contact.astro';
+import InfoItem from './info-item.astro';
+import ViewerClock from './viewer-clock.astro';
+---
+
+<div class="mt-8 space-y-3 px-5 text-sm text-foreground sm:px-0">
+  <InfoItem icon="lucide:code-xml">{profile.role}</InfoItem>
+
+  <div class="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+    <InfoItem icon="lucide:map-pin">{profile.location}</InfoItem>
+
+    <InfoItem icon="lucide:clock">
+      <ViewerClock ownerTimezone={profile.timezone} />
+    </InfoItem>
+
+    <InfoItem icon="lucide:phone">
+      <EncryptedContact
+        value={profile.phone}
+        prefix="tel:"
+        class="font-mono transition hover:text-foreground"
+      />
+    </InfoItem>
+
+    <InfoItem icon="lucide:mail">
+      <EncryptedContact
+        value={profile.email}
+        prefix="mailto:"
+        class="transition hover:text-foreground"
+      />
+    </InfoItem>
+
+    <InfoItem icon="lucide:link" href={`https://${profile.website}`} external>
+      {profile.website}
+    </InfoItem>
+
+    <InfoItem icon="lucide:mars">{profile.pronouns}</InfoItem>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+---
+import { profile } from '../../data/profile';
+import { TextFlip } from '../ui/text-flip';
+---
+
+<div class="flex items-center gap-5 sm:items-end">
+  <div class="relative shrink-0">
+    <div
+      class="flex h-30 w-30 items-center justify-center rounded-full border-4 border-background text-4xl font-semibold shadow-lg shadow-black/40 sm:h-40 sm:w-40"
+      style="background: linear-gradient(135deg, oklch(0.45 0.1 55), oklch(0.35 0.08 40)); color: oklch(0.88 0.12 72);"
+      aria-label={`${profile.name} avatar`}
+    >
+      {profile.initials}
+    </div>
+    <span
+      class="absolute right-1.5 bottom-1.5 h-6 w-6 rounded-full border-4 border-background"
+      style="background: oklch(0.75 0.15 145);"
+      aria-label="online"></span>
+  </div>
+
+  <div class="relative min-w-0 flex-1 sm:static sm:pb-1">
+    <h1 class="truncate text-3xl font-semibold tracking-tight">
+      {profile.name}
+    </h1>
+    <div
+      class="absolute top-full right-0 left-0 mt-1.5 overflow-hidden font-mono text-sm text-muted-foreground sm:static sm:mt-1.5"
+    >
+      <TextFlip client:load items={profile.statuses} interval={3.5} />
+    </div>
+  </div>
+</div>
