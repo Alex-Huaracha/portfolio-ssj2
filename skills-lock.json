@@ -1,10 +1,20 @@
 {
   "version": 1,
   "skills": {
+    "astro": {
+      "source": "astrolicious/agent-skills",
+      "sourceType": "github",
+      "computedHash": "3a70f9666e7b6a03efb939b7e62938f4d3a6a5d956b2cc3c10011fda6ba27e9b"
+    },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "computedHash": "03365c7543539f6e6689a754e65b3d8ea023ba9d6ea12a9b5550462bf060af8c"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",

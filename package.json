@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.4",
     "@fontsource-variable/geist": "^5.2.8",
+    "@fontsource-variable/geist-mono": "^5.2.7",
     "@iconify-json/lucide": "^1.2.102",
     "@iconify-json/simple-icons": "^1.2.79",
     "@iconify/react": "^6.0.2",
