@@ -1,0 +1,11 @@
+---
+import { profile } from '../../data/profile';
+import { TextFlip } from '../ui/text-flip';
+---
+
+<div
+  class="flex h-14 items-center gap-2 border-y border-border px-5 py-2.5 font-mono text-sm text-muted-foreground sm:-mx-8 sm:h-auto sm:min-h-11 sm:px-8"
+>
+  <span aria-hidden="true" class="shrink-0 text-primary">&gt;</span>
+  <TextFlip client:load items={profile.statuses} interval={3.5} />
+</div>
