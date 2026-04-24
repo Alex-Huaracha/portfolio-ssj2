@@ -1,6 +1,6 @@
 ---
 import { navItems } from '../../data/nav';
-import { site } from '../../data/site';
+import { profile } from '../../data/profile';
 import ThemeToggle from './theme-toggle.astro';
 ---
 
@@ -14,9 +14,9 @@ import ThemeToggle from './theme-toggle.astro';
     <a
       href="/"
       class="flex h-8 items-center rounded-full px-3 text-sm font-medium tracking-tight text-foreground transition hover:bg-white/6"
-      aria-label={`${site.name} — home`}
+      aria-label={`${profile.name} — home`}
     >
-      {site.initials}
+      {profile.initials}
     </a>
 
     <span aria-hidden="true" class="mx-0.5 h-4 w-px bg-white/8"></span>
