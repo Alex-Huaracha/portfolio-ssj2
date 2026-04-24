@@ -1,28 +1,39 @@
 ---
-import '../styles/global.css';
-import SakuraPetals from '../components/layout/sakura-petals.astro';
+import "../styles/global.css";
+import SakuraPetals from "../components/layout/sakura-petals.astro";
+import Header from "../components/layout/header.astro";
 
 interface Props {
-	title?: string;
+    title?: string;
 }
 
-const { title = 'Portfolio' } = Astro.props;
+const { title = "Portfolio" } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<SakuraPetals />
-		<main class="relative z-10">
-			<slot />
-		</main>
-	</body>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <script is:inline>
+            const saved = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia(
+                "(prefers-color-scheme: dark)",
+            ).matches;
+            if (saved === "dark" || (!saved && prefersDark)) {
+                document.documentElement.classList.add("dark");
+            }
+        </script>
+    </head>
+    <body id="top">
+        <SakuraPetals />
+        <Header />
+        <main class="relative z-10">
+            <slot />
+        </main>
+    </body>
 </html>
