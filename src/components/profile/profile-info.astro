@@ -9,12 +9,6 @@ import ViewerClock from './viewer-clock.astro';
   <InfoItem icon="lucide:code-xml">{profile.role}</InfoItem>
 
   <div class="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-    <InfoItem icon="lucide:map-pin">{profile.location}</InfoItem>
-
-    <InfoItem icon="lucide:clock">
-      <ViewerClock ownerTimezone={profile.timezone} />
-    </InfoItem>
-
     <InfoItem icon="lucide:phone">
       <EncryptedContact
         value={profile.phone}
@@ -31,10 +25,10 @@ import ViewerClock from './viewer-clock.astro';
       />
     </InfoItem>
 
-    <InfoItem icon="lucide:link" href={`https://${profile.website}`} external>
-      {profile.website}
-    </InfoItem>
-
     <InfoItem icon="lucide:mars">{profile.pronouns}</InfoItem>
+
+    <InfoItem icon="lucide:clock">
+      <ViewerClock ownerTimezone={profile.timezone} />
+    </InfoItem>
   </div>
 </div>
