@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # local design scratch
 design-explorations/
+
+# claude code local tooling (restore via skills-lock.json + npx skills experimental_install)
+.agents/
+.claude/
