@@ -10,7 +10,9 @@
     "build": "astro check && astro build",
     "check": "astro check",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write **/*.{ts,tsx,js,jsx,css,astro,md,mdx,json} --ignore-path .gitignore",
+    "format:check": "prettier --check **/*.{ts,tsx,js,jsx,css,astro,md,mdx,json} --ignore-path .gitignore"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",
@@ -37,7 +39,28 @@
     "@tailwindcss/vite": "^4.2.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-astro-organize-imports": "^0.4.12",
+    "prettier-plugin-tailwindcss": "0.0.0-insiders.f7d2598",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "plugins": [
+      "prettier-plugin-astro",
+      "prettier-plugin-tailwindcss",
+      "prettier-plugin-astro-organize-imports"
+    ],
+    "overrides": [
+      {
+        "files": "*.astro",
+        "options": {
+          "parser": "astro"
+        }
+      }
+    ]
   }
 }
