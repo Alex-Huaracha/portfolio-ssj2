@@ -1,0 +1,114 @@
+---
+import { readdirSync } from "node:fs";
+import { resolve } from "node:path";
+
+const petalsDir = resolve("./public/petals");
+const petalFiles = readdirSync(petalsDir)
+    .filter((f) => f.endsWith(".svg"))
+    .sort()
+    .map((f) => `/petals/${f}`);
+---
+
+<div
+    id="sakura-petals"
+    data-petals={JSON.stringify(petalFiles)}
+    aria-hidden="true"
+>
+</div>
+
+<style>
+    #sakura-petals {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 0;
+    }
+</style>
+
+<script>
+    import { tsParticles } from "@tsparticles/engine";
+    import { loadSlim } from "@tsparticles/slim";
+    import { loadImageShape } from "@tsparticles/shape-image";
+
+    const container = document.getElementById("sakura-petals");
+    if (!container) throw new Error("Sakura petals container not found");
+
+    const petalFiles: string[] = JSON.parse(
+        container.dataset["petals"] ?? "[]",
+    );
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!prefersReducedMotion && petalFiles.length > 0) {
+        await loadSlim(tsParticles);
+        await loadImageShape(tsParticles);
+
+        await tsParticles.load({
+            id: "sakura-petals",
+            options: {
+                fullScreen: { enable: false },
+                background: { color: "transparent" },
+                fpsLimit: 60,
+                particles: {
+                    number: {
+                        value: 35,
+                        density: { enable: true, width: 1920, height: 1080 },
+                    },
+                    shape: {
+                        type: "image",
+                        options: {
+                            image: petalFiles.map((src) => ({
+                                src,
+                                width: 100,
+                                height: 100,
+                            })),
+                        },
+                    },
+                    size: {
+                        value: { min: 12, max: 32 },
+                    },
+                    opacity: {
+                        value: { min: 0.45, max: 0.95 },
+                    },
+                    move: {
+                        enable: true,
+                        direction: "bottom-left",
+                        speed: { min: 2, max: 5 },
+                        straight: false,
+                        outModes: { default: "out" },
+                        angle: { offset: 0, value: 20 },
+                    },
+                    rotate: {
+                        value: { min: 0, max: 360 },
+                        direction: "random",
+                        animation: {
+                            enable: true,
+                            speed: { min: 3, max: 10 },
+                            sync: false,
+                        },
+                    },
+                    wobble: {
+                        enable: true,
+                        distance: 12,
+                        speed: { min: -6, max: 6 },
+                    },
+                    tilt: {
+                        enable: true,
+                        value: { min: 0, max: 360 },
+                        direction: "random",
+                        animation: {
+                            enable: true,
+                            speed: { min: 5, max: 15 },
+                            sync: false,
+                        },
+                    },
+                },
+                detectRetina: true,
+            },
+        });
+    }
+</script>
