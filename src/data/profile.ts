@@ -4,6 +4,7 @@ export const profile = {
   handle: '@alexhuaracha',
   role: 'Software Engineer',
 
+  githubUsername: 'alex-huaracha',
   location: 'Arequipa, PE',
   timezone: 'America/Lima',
   timezoneOffset: -5,

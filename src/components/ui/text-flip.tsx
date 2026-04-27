@@ -47,7 +47,10 @@ export function TextFlip({
     <AnimatePresence mode="wait" initial={false}>
       <motion.span
         key={index}
-        className={cn('inline-block font-mono text-sm text-balance text-muted-foreground', className)}
+        className={cn(
+          'text-muted-foreground inline-block font-mono text-sm text-balance',
+          className,
+        )}
         initial="initial"
         animate="animate"
         exit="exit"

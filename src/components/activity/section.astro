@@ -1,0 +1,80 @@
+---
+import { profile } from '../../data/profile';
+import SectionTitle from '../ui/section-title.astro';
+
+interface Day {
+  date: string;
+  count: number;
+  level: 0 | 1 | 2 | 3 | 4;
+}
+
+let contributions: Day[] = [];
+let total = 0;
+
+try {
+  const res = await fetch(
+    `https://github-contributions-api.jogruber.de/v4/${profile.githubUsername}?y=last`,
+  );
+  if (res.ok) {
+    const data = await res.json();
+    contributions = data.contributions ?? [];
+    total = data.total?.lastYear ?? 0;
+  }
+} catch {
+  // fallback: empty grid
+}
+
+// Pad start so rows align to days of the week (Sunday-first like GitHub)
+const firstDayOfWeek = contributions[0]
+  ? new Date(contributions[0].date).getUTCDay()
+  : 0;
+const padded: (Day | null)[] = [
+  ...Array(firstDayOfWeek).fill(null),
+  ...contributions,
+];
+
+// Chunk into weeks (columns of 7)
+const weeks: (Day | null)[][] = [];
+for (let i = 0; i < padded.length; i += 7) {
+  weeks.push(padded.slice(i, i + 7));
+}
+
+const levelClass: Record<Day['level'], string> = {
+  0: 'bg-muted/60',
+  1: 'bg-foreground/25',
+  2: 'bg-foreground/45',
+  3: 'bg-foreground/70',
+  4: 'bg-foreground/95',
+};
+---
+
+<section class="overflow-x-auto p-4">
+  <SectionTitle>
+    Activity
+    <span
+      slot="trailing"
+      class="font-mono text-xs whitespace-nowrap text-muted-foreground"
+    >
+      {total} contributions / past year
+    </span>
+  </SectionTitle>
+
+  <div class="flex gap-0.5">
+    {
+      weeks.map((week) => (
+        <div class="flex flex-col gap-0.5">
+          {week.map((day) =>
+            day ? (
+              <div
+                class:list={['size-2.5 rounded-[1px]', levelClass[day.level]]}
+                title={`${day.count} contributions on ${day.date}`}
+              />
+            ) : (
+              <div class="size-2.5" />
+            ),
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,5 +1,6 @@
 ---
 import { getEntry, render } from 'astro:content';
+import SectionTitle from '../ui/section-title.astro';
 
 const entry = await getEntry('about', 'main');
 if (!entry) throw new Error('Missing about/main content entry');
@@ -8,11 +9,7 @@ const { Content } = await render(entry);
 ---
 
 <section class="p-4">
-  <h2
-    class="mb-2 font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase"
-  >
-    About me
-  </h2>
+  <SectionTitle>About me</SectionTitle>
   {
     entry.data.headline && (
       <p class="text-foreground mb-2 text-sm font-medium">
