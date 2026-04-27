@@ -1,5 +1,4 @@
 ---
-import { Icon } from 'astro-icon/components';
 import { profile } from '../../data/profile';
 import EncryptedContact from './encrypted-contact.astro';
 import InfoItem from './item.astro';
@@ -32,22 +31,4 @@ import ViewerClock from './viewer-clock.astro';
       <ViewerClock ownerTimezone={profile.timezone} />
     </InfoItem>
   </div>
-
-  <ul class="mt-4 flex items-center gap-1.5">
-    {
-      profile.socials.map((s) => (
-        <li>
-          <a
-            href={s.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={s.label}
-            class="border-border bg-muted/60 text-muted-foreground hover:border-primary/60 hover:bg-muted hover:text-foreground flex size-10 items-center justify-center rounded-full border transition hover:-translate-y-0.5"
-          >
-            <Icon name={s.icon} class="size-5" />
-          </a>
-        </li>
-      ))
-    }
-  </ul>
 </div>
