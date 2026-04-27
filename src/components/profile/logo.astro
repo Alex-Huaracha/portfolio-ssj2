@@ -1,0 +1,20 @@
+---
+import { profile } from '../../data/profile';
+---
+
+<section
+  class="relative flex h-40 items-center justify-center border-b border-border sm:h-48"
+  style="background-image: radial-gradient(circle, color-mix(in oklch, currentColor 22%, transparent) 1px, transparent 1px); background-size: 18px 18px;"
+>
+  <span
+    class="font-mono text-5xl font-bold text-foreground select-none sm:text-6xl"
+    aria-label={`${profile.name} logo`}
+  >
+    {profile.initials}
+  </span>
+  <div
+    class="absolute top-3 right-4 font-mono text-[10px] tracking-[0.2em] text-primary uppercase"
+  >
+    available · {profile.location}
+  </div>
+</section>

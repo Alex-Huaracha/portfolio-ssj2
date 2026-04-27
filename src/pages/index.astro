@@ -1,21 +1,25 @@
 ---
-import ProfileAbout from '../components/profile/profile-about.astro';
-import ProfileCard from '../components/profile/profile-card.astro';
-import ProfileHeader from '../components/profile/profile-header.astro';
-import ProfileInfo from '../components/profile/profile-info.astro';
-import ProfileStack from '../components/profile/profile-stack.astro';
-import ProfileStatus from '../components/profile/profile-status.astro';
+import AboutSection from '../components/about/section.astro';
+import InfoSection from '../components/info/section.astro';
+import ProfileSection from '../components/profile/section.astro';
+import StackSection from '../components/stack/section.astro';
+import TraceCorners from '../components/ui/trace-corners.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Alex Huaracha">
-  <div class="mx-auto w-full max-w-3xl px-4 pt-24 pb-12 sm:px-0">
-    <ProfileCard>
-      <ProfileHeader />
-      <ProfileStatus />
-      <ProfileInfo />
-      <ProfileAbout />
-      <ProfileStack />
-    </ProfileCard>
+  <div class="mx-auto w-full max-w-3xl px-2 pt-24 pb-12 sm:px-0">
+    <article
+      class="relative rounded-lg border border-border backdrop-blur-sm backdrop-saturate-150"
+    >
+      <TraceCorners />
+      <ProfileSection />
+      <div class="trace-hatched"></div>
+      <InfoSection />
+      <div class="trace-hatched"></div>
+      <AboutSection />
+      <div class="trace-hatched"></div>
+      <StackSection />
+    </article>
   </div>
 </Layout>

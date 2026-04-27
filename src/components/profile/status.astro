@@ -1,0 +1,11 @@
+---
+import { profile } from '../../data/profile';
+import { TextFlip } from '../ui/text-flip';
+---
+
+<div
+  class="h-12.5 overflow-hidden py-1 pl-4 whitespace-nowrap sm:h-9"
+  style="mask-image: linear-gradient(to right, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, black 85%, transparent);"
+>
+  <TextFlip client:load items={profile.statuses} interval={3.5} />
+</div>
