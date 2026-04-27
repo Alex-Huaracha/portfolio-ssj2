@@ -5,7 +5,7 @@ import {
   stackTiles,
   type StackTile as Tile,
 } from '@/data/stack';
-import { placeRandomly } from './grid-utils';
+import { placeOrdered } from './grid-utils';
 import { useConnectionController } from './use-connection-controller';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { StackTile } from './StackTile';
@@ -17,7 +17,7 @@ export function StackGrid() {
   const timersRef = useRef<number[]>([]);
 
   useEffect(() => {
-    setPlacement(placeRandomly(stackTiles, stackDesktopTiles, stackGrid));
+    setPlacement(placeOrdered(stackTiles, stackDesktopTiles, stackGrid));
   }, []);
 
   const filledPositions = useMemo(

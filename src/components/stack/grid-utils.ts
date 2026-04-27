@@ -40,14 +40,6 @@ export function allPositions(grid: GridConfig): string[] {
   return out;
 }
 
-function shuffleInPlace<T>(arr: T[]): T[] {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i]!, arr[j]!] = [arr[j]!, arr[i]!];
-  }
-  return arr;
-}
-
 const FILLED_POSITIONS_MAIN = [
   'A1',
   'A2',
@@ -73,24 +65,20 @@ const FILLED_POSITIONS_MAIN = [
 
 const FILLED_POSITIONS_DESKTOP = ['F1', 'F3', 'F4', 'F6'];
 
-export function placeRandomly<T extends { name: string }>(
+export function placeOrdered<T extends { name: string }>(
   tiles: readonly T[],
   desktopTiles: readonly T[],
   _grid: GridConfig,
 ): Map<string, T> {
   const map = new Map<string, T>();
 
-  const mainSlots = [...FILLED_POSITIONS_MAIN];
-  shuffleInPlace(mainSlots);
   tiles.forEach((tile, i) => {
-    const pos = mainSlots[i];
+    const pos = FILLED_POSITIONS_MAIN[i];
     if (pos) map.set(pos, tile);
   });
 
-  const desktopSlots = [...FILLED_POSITIONS_DESKTOP];
-  shuffleInPlace(desktopSlots);
   desktopTiles.forEach((tile, i) => {
-    const pos = desktopSlots[i];
+    const pos = FILLED_POSITIONS_DESKTOP[i];
     if (pos) map.set(pos, tile);
   });
 
