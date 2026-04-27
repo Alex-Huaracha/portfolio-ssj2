@@ -1,43 +1,44 @@
-# Astro Starter Kit: Minimal
+# portfolio-ssj2
+
+Personal portfolio and blog. Built with Astro, React, Tailwind v4 and TypeScript.
+
+## Commands
+
+All commands are run from the root of the project:
+
+| Command             | Action                                     |
+| :------------------ | :----------------------------------------- |
+| `pnpm install`      | Install dependencies                       |
+| `pnpm dev`          | Start local dev server at `localhost:4321` |
+| `pnpm build`        | Build production site to `./dist/`         |
+| `pnpm preview`      | Preview the production build locally       |
+| `pnpm check`        | Run `astro check` (type + diagnostics)     |
+| `pnpm format`       | Format all files with Prettier             |
+| `pnpm format:check` | Check formatting without writing           |
+
+## Restoring Claude Code skills
+
+This repo uses Claude Code agent skills pinned in `skills-lock.json`. The skill
+source folders (`.agents/` and `.claude/`) are gitignored — only the lockfile
+travels with the repo. To install them after cloning:
 
 ```sh
-pnpm create astro@latest -- --template minimal
+npx skills experimental_install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── components/
+│   ├── ui/        shadcn primitives
+│   ├── layout/    Header, SakuraPetals, ThemeToggle
+│   ├── profile/   profile card blocks
+│   └── blog/      blog-specific components
+├── content/blog/  MDX posts
+├── data/          typed site config (site.ts, nav.ts)
+├── layouts/       page wrappers
+├── lib/           helpers
+├── pages/         file-based routing
+└── styles/        global.css
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

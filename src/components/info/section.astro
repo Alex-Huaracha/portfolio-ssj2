@@ -1,11 +1,12 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { profile } from '../../data/profile';
 import EncryptedContact from './encrypted-contact.astro';
-import InfoItem from './info-item.astro';
+import InfoItem from './item.astro';
 import ViewerClock from './viewer-clock.astro';
 ---
 
-<div class="mt-6 space-y-3 px-5 text-sm text-foreground sm:px-0">
+<div class="space-y-2.5 p-4 text-sm text-foreground">
   <InfoItem icon="lucide:code-xml">{profile.role}</InfoItem>
 
   <div class="grid gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -31,4 +32,22 @@ import ViewerClock from './viewer-clock.astro';
       <ViewerClock ownerTimezone={profile.timezone} />
     </InfoItem>
   </div>
+
+  <ul class="mt-4 flex items-center gap-1.5">
+    {
+      profile.socials.map((s) => (
+        <li>
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.label}
+            class="border-border bg-muted/60 text-muted-foreground hover:border-primary/60 hover:bg-muted hover:text-foreground flex size-10 items-center justify-center rounded-full border transition hover:-translate-y-0.5"
+          >
+            <Icon name={s.icon} class="size-5" />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </div>

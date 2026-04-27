@@ -29,7 +29,7 @@ export function StackTile({
       id={`stack-tile-${position}`}
       aria-hidden="true"
       className={cn(
-        'group relative z-10 flex cursor-pointer flex-col items-center justify-center rounded-lg bg-card',
+        'group bg-card relative z-10 flex cursor-pointer flex-col items-center justify-center rounded-lg',
         emphasized
           ? 'scale-[1.105] shadow-lg'
           : 'scale-[0.9] hover:scale-[1.105] hover:shadow-lg',
@@ -45,7 +45,7 @@ export function StackTile({
       }}
     >
       {isHub ? (
-        <span className="font-mono text-xs font-bold tracking-tight text-card-foreground sm:text-sm">
+        <span className="text-card-foreground font-mono text-xs font-bold tracking-tight sm:text-sm">
           {hubLabel}
         </span>
       ) : (
@@ -65,7 +65,7 @@ export function StackTile({
       {!isHub && name && (
         <span
           className={cn(
-            'overflow-hidden text-xs font-semibold text-card-foreground group-hover:max-h-6 group-hover:scale-100 group-hover:opacity-100 md:text-sm',
+            'text-card-foreground overflow-hidden text-xs font-semibold group-hover:max-h-6 group-hover:scale-100 group-hover:opacity-100 md:text-sm',
             emphasized
               ? 'max-h-6 scale-100 opacity-100'
               : 'max-h-0 scale-75 opacity-0',
