@@ -10,12 +10,10 @@ import SectionTitle from '../ui/section-title.astro';
     {
       stackCategories.map((category) => (
         <li class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
-          <span class="shrink-0 text-xs tracking-widest text-muted-foreground uppercase sm:w-28">
+          <span class="text-muted-foreground shrink-0 text-xs tracking-widest uppercase sm:w-28">
             // {category.name}
           </span>
-          <span class="text-foreground">
-            {category.items.join(' · ')}
-          </span>
+          <span class="text-foreground">{category.items.join(' · ')}</span>
         </li>
       ))
     }
