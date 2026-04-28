@@ -5,6 +5,7 @@ import InfoSection from '../components/info/section.astro';
 import ProfileSection from '../components/profile/section.astro';
 import StackSection from '../components/stack/section.astro';
 import DimensionLine from '../components/ui/dimension-line.astro';
+import SocialsRow from '../components/ui/socials-row.astro';
 import TraceCorners from '../components/ui/trace-corners.astro';
 import Layout from '../layouts/Layout.astro';
 ---
@@ -18,10 +19,15 @@ import Layout from '../layouts/Layout.astro';
       <ProfileSection />
       <div class="trace-hatched"></div>
       <InfoSection />
-      <DimensionLine />
+      <DimensionLine>
+        <SocialsRow />
+      </DimensionLine>
       <AboutSection />
       <div class="trace-hatched"></div>
       <StackSection />
+      <DimensionLine>
+        <span class="px-3 tracking-widest uppercase">Contributions</span>
+      </DimensionLine>
       <ActivitySection />
       <div class="trace-hatched"></div>
     </article>
