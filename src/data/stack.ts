@@ -22,10 +22,10 @@ export const stackCategories: StackCategory[] = [
   },
   {
     name: 'DevOps',
-    items: ['Docker', 'GCP'],
+    items: ['Docker', 'GCP', 'AWS'],
   },
   {
     name: 'Messaging',
-    items: ['Kafka'],
+    items: ['Kafka', 'Google Cloud Pub/Sub'],
   },
 ];
