@@ -1,0 +1,12 @@
+---
+import { experiences } from '../../data/experience';
+import ExperienceCard from './experience-card.tsx';
+---
+
+<ul class="flex flex-col gap-4">
+  {
+    experiences.map((exp) => (
+      <ExperienceCard client:visible experience={exp} />
+    ))
+  }
+</ul>
