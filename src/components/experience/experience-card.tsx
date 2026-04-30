@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Experience } from '../../data/experience';
+import { formatDate, formatDuration } from '../../lib/experience';
 
 interface Props {
   experience: Experience;
@@ -11,7 +12,7 @@ export default function ExperienceCard({ experience: exp }: Props) {
   const initial = exp.company.charAt(0).toUpperCase();
 
   return (
-    <li className="relative px-4 py-3 font-mono text-sm">
+    <li className="relative px-3 py-3 font-mono text-sm">
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 h-full w-full text-muted-foreground/25"
@@ -63,20 +64,21 @@ export default function ExperienceCard({ experience: exp }: Props) {
           onClick={() => hasDetails && setOpen((v) => !v)}
           aria-expanded={open}
           disabled={!hasDetails}
-          className="flex w-full items-baseline justify-between gap-3 text-left"
+          className="text-muted-foreground flex w-full items-baseline justify-between gap-3 text-left text-xs"
         >
-          <span className="text-foreground font-medium">{exp.role}</span>
-          <span className="flex shrink-0 items-center gap-3">
-            <span className="text-muted-foreground text-xs tabular-nums">
-              {exp.duration}
-            </span>
-            {hasDetails && (
-              <span className="text-foreground/60 w-[1.25rem] text-center text-xs">
-                [{open ? '−' : '+'}]
-              </span>
-            )}
+          <span className="tabular-nums">
+            {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
+            <span className="px-2">|</span>
+            {formatDuration(exp.startDate, exp.endDate)}
           </span>
+          {hasDetails && (
+            <span className="text-foreground/60 w-[1.25rem] shrink-0 text-center">
+              [{open ? '−' : '+'}]
+            </span>
+          )}
         </button>
+
+        <p className="text-foreground mt-1 font-medium">{exp.role}</p>
 
         <p className="text-muted-foreground mt-0.5 text-xs">
           {exp.url ? (
@@ -91,20 +93,9 @@ export default function ExperienceCard({ experience: exp }: Props) {
           ) : (
             <span>{exp.company}</span>
           )}
-          <span className="px-1">·</span>
-          <span className="tabular-nums">
-            {exp.startDate} → {exp.endDate}
-          </span>
         </p>
 
         <p className="text-muted-foreground mt-2 text-xs">
-          <span className="text-foreground/40">// </span>
-          {exp.stack.join(', ')}
-        </p>
-
-        <div className="my-2 h-px bg-border" />
-
-        <p className="text-muted-foreground text-xs">
           <span className="text-foreground/40">› </span>
           {exp.highlight}
         </p>
@@ -125,6 +116,13 @@ export default function ExperienceCard({ experience: exp }: Props) {
             </ul>
           </div>
         </div>
+
+        <div className="border-muted-foreground/15 mt-3 border-t" />
+
+        <p className="text-muted-foreground mt-2 text-xs">
+          <span className="text-foreground/40">// </span>
+          {exp.stack.join(', ')}
+        </p>
       </div>
     </li>
   );
