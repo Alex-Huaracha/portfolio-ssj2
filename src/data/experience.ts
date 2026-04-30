@@ -1,11 +1,9 @@
 export interface Experience {
-  id: string;
   role: string;
   company: string;
   url?: string;
   startDate: string;
   endDate: string;
-  duration: string;
   stack: string[];
   highlight: string;
   details: string[];
@@ -13,13 +11,11 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
-    id: 'E.01',
     role: 'Software Developer',
     company: 'Company Name',
     url: 'https://example.com',
-    startDate: '2025.01',
+    startDate: '2025-01',
     endDate: 'present',
-    duration: '4mo',
     stack: ['typescript', 'next.js', 'postgres'],
     highlight: 'Shipped X feature used by N users.',
     details: [
@@ -28,13 +24,11 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    id: 'E.02',
     role: 'Backend Developer · Intern',
     company: 'Company Name',
     url: 'https://example.com',
-    startDate: '2024.03',
-    endDate: '2024.12',
-    duration: '10mo',
+    startDate: '2024-03',
+    endDate: '2024-12',
     stack: ['node.js', 'express', 'mongodb'],
     highlight: 'Built ingestion pipeline handling N events/day.',
     details: [
@@ -43,13 +37,11 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    id: 'E.03',
     role: 'Research Assistant · AI',
     company: 'Universidad Nacional de San Agustín',
     url: 'https://www.unsa.edu.pe/',
-    startDate: '2023.06',
-    endDate: '2024.02',
-    duration: '1y 8mo',
+    startDate: '2023-06',
+    endDate: '2024-02',
     stack: ['python', 'pytorch'],
     highlight: 'Co-authored paper submitted to journal.',
     details: [
@@ -58,12 +50,10 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    id: 'E.04',
     role: 'Freelance · Full Stack',
     company: 'Independent',
-    startDate: '2022',
-    endDate: '2023',
-    duration: '1y+',
+    startDate: '2022-01',
+    endDate: '2023-12',
     stack: ['react', 'node', 'postgres'],
     highlight: 'Delivered N web systems for SMB clients.',
     details: [
