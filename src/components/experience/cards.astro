@@ -1,12 +1,24 @@
 ---
 import { experiences } from '../../data/experience';
 import ExperienceCard from './experience-card.tsx';
+
+const sorted = [...experiences].sort((a, b) => {
+  const aCurrent = a.endDate === 'present';
+  const bCurrent = b.endDate === 'present';
+  if (aCurrent && !bCurrent) return -1;
+  if (!aCurrent && bCurrent) return 1;
+  const aKey = aCurrent ? a.startDate : a.endDate;
+  const bKey = bCurrent ? b.startDate : b.endDate;
+  return bKey.localeCompare(aKey);
+});
 ---
 
-<ul class="flex flex-col gap-4">
+<ul class="flex flex-col">
   {
-    experiences.map((exp) => (
-      <ExperienceCard client:visible experience={exp} />
+    sorted.map((exp) => (
+      <li class="border-border border-b last:border-b-0">
+        <ExperienceCard client:visible experience={exp} />
+      </li>
     ))
   }
 </ul>

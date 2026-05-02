@@ -16,12 +16,13 @@ export function formatDuration(startDate: string, endDate: string): string {
     (end.year - start.year) * 12 + (end.month - start.month) + 1;
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
-  if (years === 0) return `${months}mo`;
+  if (years === 0) return `${months}m`;
   if (months === 0) return `${years}y`;
-  return `${years}y ${months}mo`;
+  return `${years}y ${months}m`;
 }
 
 export function formatDate(value: string): string {
-  if (value === 'present') return 'present';
-  return value.replace('-', '.');
+  if (value === 'present') return 'now';
+  const [year, month] = value.split('-');
+  return `${month}.${year.slice(2)}`;
 }
