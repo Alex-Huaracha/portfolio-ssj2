@@ -15,9 +15,9 @@ const sorted = [...experiences].sort((a, b) => {
 
 <ul class="flex flex-col">
   {
-    sorted.map((exp) => (
+    sorted.map((exp, i) => (
       <li class="border-border border-b last:border-b-0">
-        <ExperienceCard client:visible experience={exp} />
+        <ExperienceCard client:visible experience={exp} defaultOpen={i === 0} />
       </li>
     ))
   }

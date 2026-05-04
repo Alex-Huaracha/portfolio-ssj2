@@ -4,10 +4,14 @@ import { formatDate, formatDuration } from '../../lib/experience';
 
 interface Props {
   experience: Experience;
+  defaultOpen?: boolean;
 }
 
-export default function ExperienceCard({ experience: exp }: Props) {
-  const [open, setOpen] = useState(false);
+export default function ExperienceCard({
+  experience: exp,
+  defaultOpen = false,
+}: Props) {
+  const [open, setOpen] = useState(defaultOpen);
   const hasDetails = exp.details.length > 0;
 
   const toggle = () => hasDetails && setOpen((v) => !v);
@@ -49,7 +53,7 @@ export default function ExperienceCard({ experience: exp }: Props) {
                 exp.company
               )}
             </span>
-            <span className="text-muted-foreground shrink-0 text-right text-xs tabular-nums whitespace-nowrap">
+            <span className="text-muted-foreground shrink-0 text-right text-xs whitespace-nowrap tabular-nums">
               {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
               <span className="text-foreground/40 px-0.5">|</span>
               {formatDuration(exp.startDate, exp.endDate)}
@@ -72,15 +76,14 @@ export default function ExperienceCard({ experience: exp }: Props) {
       >
         <div className="min-h-0 overflow-hidden">
           <div className="text-muted-foreground space-y-2 px-2 pb-4 text-xs">
-            <p>
-              <span className="text-foreground/40">› </span>
+            <p className="border-foreground/30 text-foreground border-l-3 pl-3 font-mono italic">
               {exp.highlight}
             </p>
 
             {hasDetails && (
               <ul className="flex flex-col gap-2">
                 {exp.details.map((d, i) => (
-                  <li key={i}>
+                  <li key={i} className="text-foreground font-extralight">
                     <span className="text-foreground/40">› </span>
                     {d}
                   </li>
