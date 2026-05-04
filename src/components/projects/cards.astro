@@ -1,0 +1,16 @@
+---
+import { projects } from '../../data/projects';
+import ProjectCard from './project-card.tsx';
+
+const sorted = [...projects].sort((a, b) => b.year.localeCompare(a.year));
+---
+
+<ul class="flex flex-col">
+  {
+    sorted.map((p) => (
+      <li class="border-border border-b last:border-b-0">
+        <ProjectCard client:visible project={p} />
+      </li>
+    ))
+  }
+</ul>
