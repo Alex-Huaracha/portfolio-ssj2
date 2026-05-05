@@ -10,16 +10,18 @@ const { Content } = await render(entry);
 
 <section class="p-4">
   <SectionTitle>About me</SectionTitle>
-  {
-    entry.data.headline && (
-      <p class="text-foreground mb-2 text-sm font-medium">
-        {entry.data.headline}
-      </p>
-    )
-  }
-  <div
-    class="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed text-muted-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
-  >
-    <Content />
+  <div data-reveal="fade-up" style="--reveal-delay: 650ms;">
+    {
+      entry.data.headline && (
+        <p class="text-foreground mb-2 text-sm font-medium">
+          {entry.data.headline}
+        </p>
+      )
+    }
+    <div
+      class="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed text-muted-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+    >
+      <Content />
+    </div>
   </div>
 </section>

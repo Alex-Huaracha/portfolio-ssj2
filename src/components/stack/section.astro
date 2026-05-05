@@ -6,7 +6,11 @@ import SectionTitle from '../ui/section-title.astro';
 <section class="p-4">
   <SectionTitle>Workbench</SectionTitle>
 
-  <ul class="flex flex-col gap-3 font-mono text-sm">
+  <ul
+    class="flex flex-col gap-3 font-mono text-sm"
+    data-reveal="fade-up"
+    style="--reveal-delay: 650ms;"
+  >
     {
       stackCategories.map((category) => (
         <li class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">

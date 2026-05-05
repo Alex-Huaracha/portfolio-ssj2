@@ -8,13 +8,20 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class={cn('mb-3 flex items-center gap-3', className)}>
-  <div class="size-3 shrink-0 border-t border-l border-foreground"></div>
+<div
+  class={cn('mb-3 flex items-center gap-3', className)}
+  data-reveal="title-row"
+>
+  <span
+    class="block size-3 shrink-0 border-t border-l border-foreground"
+    data-stage="bracket"
+    aria-hidden="true"></span>
   <h2
     class="shrink-0 font-mono text-2xl font-medium tracking-widest text-foreground uppercase"
+    data-stage="title"
   >
     <slot />
   </h2>
-  <div class="h-px flex-1 bg-border"></div>
+  <div class="h-px flex-1 bg-border" data-stage="line"></div>
   <slot name="trailing" />
 </div>

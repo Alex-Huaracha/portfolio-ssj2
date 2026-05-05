@@ -18,24 +18,30 @@ import Layout from '../layouts/Layout.astro';
       class="relative rounded-lg border border-border backdrop-blur-sm backdrop-saturate-150"
     >
       <TraceCorners />
-      <ProfileSection />
-      <div class="trace-hatched"></div>
-      <InfoSection />
+      <div data-reveal="fade-up"><ProfileSection /></div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
+      <div data-reveal="fade-up"><InfoSection /></div>
       <DimensionLine>
         <SocialsRow />
       </DimensionLine>
       <AboutSection />
-      <div class="trace-hatched"></div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
       <ExperienceSection />
-      <div class="trace-hatched"></div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
       <ProjectsSection />
-      <div class="trace-hatched"></div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
       <StackSection />
       <DimensionLine>
-        <span class="px-3 tracking-widest uppercase">Contributions</span>
+        <span
+          class="px-3 tracking-widest uppercase"
+          data-reveal="fade-up"
+          style="--reveal-delay: 350ms; --reveal-duration: 500ms;"
+        >
+          Contributions
+        </span>
       </DimensionLine>
-      <ActivitySection />
-      <div class="trace-hatched"></div>
+      <div data-reveal="fade-up"><ActivitySection /></div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
     </article>
   </div>
 </Layout>

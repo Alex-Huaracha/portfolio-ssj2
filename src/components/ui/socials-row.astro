@@ -6,12 +6,16 @@ import { profile } from '../../data/profile';
 {
   profile.socials.map((s, i) => (
     <>
-      {i > 0 && <span class="bg-border h-px flex-1" />}
+      {i > 0 && (
+        <span class="bg-border h-px flex-1" data-reveal="trace-h-draw" />
+      )}
       <a
         href={s.href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={s.label}
+        data-reveal="fade-up"
+        style={`--reveal-delay: ${350 + i * 80}ms; --reveal-duration: 500ms;`}
         class="hover:text-foreground flex shrink-0 items-center gap-1.5 px-2 transition"
       >
         <Icon name={s.icon} class="size-4" />
