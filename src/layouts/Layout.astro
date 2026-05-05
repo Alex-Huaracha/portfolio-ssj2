@@ -2,12 +2,22 @@
 import '../styles/global.css';
 import SakuraPetals from '../components/layout/sakura-petals.astro';
 import Header from '../components/layout/header.astro';
+import { profile } from '../data/profile';
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
 }
 
-const { title = 'Portfolio' } = Astro.props;
+const {
+  title = `${profile.name} — ${profile.role}`,
+  description = `Portfolio de ${profile.name}, ${profile.role} en ${profile.location}. Backend, sistemas distribuidos y detalles que importan.`,
+  image = '/og.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.site);
 ---
 
 <!doctype html>
@@ -18,7 +28,34 @@ const { title = 'Portfolio' } = Astro.props;
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="profile:first_name" content="Alex" />
+    <meta property="profile:last_name" content="Huaracha" />
+    <meta property="profile:username" content={profile.handle.replace('@', '')} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:site" content={profile.handle} />
+    <meta name="twitter:creator" content={profile.handle} />
+
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <script is:inline>
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia(
