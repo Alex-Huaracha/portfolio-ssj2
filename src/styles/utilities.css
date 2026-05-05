@@ -1,0 +1,46 @@
+/* ────────────────────────────────────────────────────────────
+   Trace utilities — blueprint/CAD line primitives.
+   Used by section dividers, brackets, and the dimension-line
+   component to draw the technical-drawing language.
+   ──────────────────────────────────────────────────────────── */
+
+@utility trace-h {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+@utility trace-v {
+  display: block;
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+@utility trace-hatched {
+  display: block;
+  width: 100%;
+  height: 2rem;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--border),
+    var(--border) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+
+@utility trace-frame {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+@utility trace-ring {
+  box-shadow: 0 0 0 1px var(--border);
+}

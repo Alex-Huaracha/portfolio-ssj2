@@ -1,5 +1,6 @@
 import { glob } from 'astro/loaders';
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import {z} from 'astro/zod'
 
 const about = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/about' }),
@@ -15,7 +16,7 @@ const experiences = defineCollection({
     role: z.string(),
     startDate: z.coerce.date(),
     endDate: z.coerce.date().optional(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
     stack: z.array(z.string()).default([]),
   }),
 });
@@ -27,8 +28,8 @@ const projects = defineCollection({
     summary: z.string(),
     date: z.coerce.date(),
     stack: z.array(z.string()).default([]),
-    repo: z.string().url().optional(),
-    demo: z.string().url().optional(),
+    repo: z.url().optional(),
+    demo: z.url().optional(),
     status: z.enum(['active', 'archived', 'wip']).default('wip'),
   }),
 });
