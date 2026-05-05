@@ -17,8 +17,9 @@
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/react": "^5.0.4",
-    "@fontsource-variable/geist": "^5.2.8",
-    "@fontsource-variable/geist-mono": "^5.2.7",
+    "@fontsource-variable/ibm-plex-sans": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-sans-condensed": "^5.2.8",
     "@iconify-json/lucide": "^1.2.102",
     "@iconify-json/simple-icons": "^1.2.79",
     "@iconify/react": "^6.0.2",

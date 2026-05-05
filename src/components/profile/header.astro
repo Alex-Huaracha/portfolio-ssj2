@@ -27,12 +27,14 @@ import ProfileStatus from './status.astro';
           aria-hidden="true"
           class="block font-mono text-xs tracking-tight text-muted-foreground/60 select-none max-sm:hidden"
         >
-          text-3xl text-foreground font-semibold
+          font-display text-3xl font-semibold tracking-tight
         </span>
       </div>
 
       <div class="border-t">
-        <h1 class="pl-4 text-3xl font-semibold tracking-tight">
+        <h1
+          class="pl-4 font-display text-3xl font-semibold tracking-tight"
+        >
           {profile.name}
         </h1>
 

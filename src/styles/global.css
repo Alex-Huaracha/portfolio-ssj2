@@ -1,8 +1,12 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 /*@import "shadcn/tailwind.css";*/
-@import '@fontsource-variable/geist';
-@import '@fontsource-variable/geist-mono';
+@import '@fontsource-variable/ibm-plex-sans';
+@import '@fontsource/ibm-plex-sans-condensed/600.css';
+@import '@fontsource/ibm-plex-sans-condensed/700.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/700.css';
 
 @plugin '@tailwindcss/typography';
 
@@ -41,9 +45,11 @@
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0.94 0 0);
   --sidebar-ring: oklch(0 0 0);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: 'IBM Plex Sans Variable', sans-serif;
+  --font-display:
+    'IBM Plex Sans Condensed', 'IBM Plex Sans Variable', sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: 'Geist Mono Variable', monospace;
+  --font-mono: 'IBM Plex Mono', monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -101,9 +107,11 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.32 0 0);
   --sidebar-ring: oklch(0.72 0 0);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: 'IBM Plex Sans Variable', sans-serif;
+  --font-display:
+    'IBM Plex Sans Condensed', 'IBM Plex Sans Variable', sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: 'Geist Mono Variable', monospace;
+  --font-mono: 'IBM Plex Mono', monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -163,6 +171,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -184,7 +193,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
 }
 
@@ -251,13 +260,15 @@
 
 [data-reveal='trace-h'] {
   opacity: 0;
-  transition: opacity var(--reveal-duration) var(--reveal-ease) var(--reveal-delay);
+  transition: opacity var(--reveal-duration) var(--reveal-ease)
+    var(--reveal-delay);
 }
 
 [data-reveal='trace-v'] {
   transform: scaleY(0);
   transform-origin: top center;
-  transition: transform var(--reveal-duration) var(--reveal-ease) var(--reveal-delay);
+  transition: transform var(--reveal-duration) var(--reveal-ease)
+    var(--reveal-delay);
 }
 
 [data-reveal='trace-hatched'] {

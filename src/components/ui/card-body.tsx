@@ -13,7 +13,7 @@ export default function CardBody({ highlight, details, stack }: Props) {
       {details.length > 0 && (
         <ul className="flex flex-col gap-2">
           {details.map((d, i) => (
-            <li key={i} className="text-foreground font-extralight">
+            <li key={i} className="text-foreground/90 font-light">
               <span className="text-foreground/40">› </span>
               {d}
             </li>

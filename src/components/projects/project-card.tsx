@@ -50,7 +50,5 @@ export default function ProjectCard({ project }: Props) {
     />
   );
 
-  return (
-    <ExpandableCard header={header} body={body} disabled={!hasDetails} />
-  );
+  return <ExpandableCard header={header} body={body} disabled={!hasDetails} />;
 }

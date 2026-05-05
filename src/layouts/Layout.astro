@@ -45,7 +45,10 @@ const socialImage = new URL(image, Astro.site);
     <meta property="og:locale" content="es_PE" />
     <meta property="profile:first_name" content="Alex" />
     <meta property="profile:last_name" content="Huaracha" />
-    <meta property="profile:username" content={profile.handle.replace('@', '')} />
+    <meta
+      property="profile:username"
+      content={profile.handle.replace('@', '')}
+    />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -54,8 +57,16 @@ const socialImage = new URL(image, Astro.site);
     <meta name="twitter:site" content={profile.handle} />
     <meta name="twitter:creator" content={profile.handle} />
 
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
     <script is:inline>
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia(
