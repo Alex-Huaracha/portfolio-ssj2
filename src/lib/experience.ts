@@ -3,7 +3,7 @@ function parseMonth(value: string): { year: number; month: number } {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
   }
-  const [year, month] = value.split('-').map(Number);
+  const [year, month] = value.split('-').map(Number) as [number, number];
   return { year, month };
 }
 
@@ -23,6 +23,6 @@ export function formatDuration(startDate: string, endDate: string): string {
 
 export function formatDate(value: string): string {
   if (value === 'present') return 'now';
-  const [year, month] = value.split('-');
+  const [year, month] = value.split('-') as [string, string];
   return `${month}.${year.slice(2)}`;
 }
