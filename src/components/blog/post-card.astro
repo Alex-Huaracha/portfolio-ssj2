@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagChip from './tag-chip.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  revealDelay?: string;
+}
+
+const { post, revealDelay = '350ms' } = Astro.props;
+
+const formattedDate = post.data.date.toLocaleDateString('es-PE', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<a
+  href={`/blog/${post.id}`}
+  class="group block p-4 transition-colors hover:bg-muted/30"
+  data-reveal="fade-up"
+  style={`--reveal-delay: ${revealDelay};`}
+>
+  <h3
+    class="font-display mb-1 text-lg font-semibold tracking-wide text-foreground"
+  >
+    {post.data.title}
+  </h3>
+  <p class="mb-2 font-mono text-xs text-muted-foreground">
+    {formattedDate}
+  </p>
+  <p class="mb-3 text-sm text-muted-foreground">
+    {post.data.description}
+  </p>
+  {
+    post.data.tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {post.data.tags.map((tag) => (
+          <TagChip tag={tag} />
+        ))}
+      </div>
+    )
+  }
+</a>
