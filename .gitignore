@@ -26,6 +26,9 @@ pnpm-debug.log*
 # local design scratch
 design-explorations/
 
+# local blog verification fixture (never committed)
+src/content/blog/_*.mdx
+
 # claude code local tooling (restore via skills-lock.json + npx skills experimental_install)
 .agents/
 .claude/
