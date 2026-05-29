@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/blog/post-card.astro';
+import SectionTitle from '../../components/ui/section-title.astro';
+import TraceCorners from '../../components/ui/trace-corners.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter((p) => (import.meta.env.PROD ? !p.data.draft : true))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="Blog — Alex Huaracha">
+  <div class="mx-auto w-full max-w-3xl px-2 pt-24 pb-12 sm:px-0">
+    <article
+      class="relative rounded-lg border border-border backdrop-blur-sm backdrop-saturate-150"
+    >
+      <TraceCorners />
+      <div class="p-4">
+        <SectionTitle>Blog</SectionTitle>
+      </div>
+      <div class="trace-hatched" data-reveal="trace-hatched"></div>
+      {
+        posts.length === 0 ? (
+          <p class="text-muted-foreground p-4 font-mono text-sm">
+            No hay publicaciones todavía.
+          </p>
+        ) : (
+          posts.map((post, index) => (
+            <>
+              <PostCard post={post} revealDelay={`${350 + index * 100}ms`} />
+              {index < posts.length - 1 && (
+                <div class="trace-hatched" data-reveal="trace-hatched" />
+              )}
+            </>
+          ))
+        )
+      }
+    </article>
+  </div>
+</Layout>
