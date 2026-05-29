@@ -1,0 +1,70 @@
+---
+title: '¿Un carrito y un pedido son lo mismo? Una introducción al DDD'
+description: 'Esa pequeña confusión entre carrito y pedido es justo donde nace el Domain-Driven Design. Lo vemos con el ejemplo clásico de un e-commerce.'
+date: 2026-05-29
+tags: ['DDD', 'Domain-Driven Design', 'Arquitectura']
+draft: true
+---
+
+¿Un carrito y un pedido son lo mismo?
+
+Si tu primera reacción es "más o menos, sí", déjame mostrarte por qué esa pequeña confusión es justo donde nace el Domain-Driven Design.
+
+El DDD, en una frase, es esto: **el código tiene que hablar el idioma del negocio, no al revés.** Suena obvio, pero es más difícil de lo que parece. Veámoslo con el clásico: un e-commerce.
+
+## Cuando los tratas como si fueran lo mismo
+
+Imagina que estás construyendo el e-commerce. Llega el carrito: el usuario agrega productos, cambia cantidades, saca uno, agrega otro. Lo modelas como una lista de ítems con su precio. Funciona.
+
+Después llega el pedido. Y aquí aparece la decisión que parece inofensiva: _"un pedido es básicamente un carrito confirmado"_. Reutilizas la misma estructura y le agregas un campo: `estado = 'pagado'`. Menos código, una sola tabla. Elegante.
+
+Tres meses después subes el precio de un producto. Algo normal.
+
+Y sin que nadie toque nada, una factura ya emitida empieza a mostrar un total distinto al que se cobró. El reporte de ventas del trimestre pasado cambia solo. Un reembolso se calcula sobre el precio de hoy, no sobre el que el cliente pagó.
+
+Nada de esto es un capricho del usuario: es la contabilidad, son los impuestos, es el dinero real. Y todo se rompió por una sola razón: ese "pedido" nunca guardó lo que pasó. Solo apuntaba a un producto que cambió.
+
+Era un carrito disfrazado de pedido.
+
+## La diferencia real: intención vs hecho
+
+Volvamos a la pregunta del inicio. Carrito y pedido se parecen porque guardan casi los mismos datos: productos, cantidades, precios. Pero hacen dos cosas opuestas.
+
+Un **carrito es una intención.** Vive en presente. "Quiero estos productos." Cambia todo el tiempo, y justamente por eso tiene que mostrar el precio de _ahora_: si el producto subió, el carrito sube. Por eso el carrito **apunta** al producto. Quiere estar siempre actualizado.
+
+Un **pedido es un hecho.** Vive en pasado. "El cliente compró estos productos, a este precio, este día." Ya pasó. Y un hecho no se actualiza: se conserva. Por eso el pedido no puede apuntar a nada que cambie — tiene que guardar una **copia** de lo que pasó.
+
+Ahí está toda la diferencia, en una sola línea:
+
+| | Carrito | Pedido |
+| --- | --- | --- |
+| Es | una intención | un hecho |
+| Tiempo | presente (cambia) | pasado (congelado) |
+| Precio | el de ahora | el de ese momento |
+| Por eso | **apunta** al producto | **copia** el producto |
+
+Y de aquí sale la regla que casi nadie te dice: **algo inmutable no puede apuntar a algo que cambia.** Si el pedido tiene que ser un hecho fijo, no puede depender de una tabla viva. Tiene que sacarle una foto al momento de la compra y guardarla.
+
+El bug del precio que cambiaba nunca fue un error en el código de pagos. El pedido guardó solo una **referencia** al producto (su `id`), en lugar de una **copia** del precio. Como apuntaba a un producto vivo, cuando el producto cambió, el "pedido" cambió con él. Un hecho no debería poder cambiar nunca.
+
+## La lección: el negocio ya lo sabía
+
+Aquí está lo importante, y es fácil pasarlo por alto: **en ningún momento la base de datos te dijo que el pedido debía congelar el precio.** Ningún diagrama, ningún tipo de dato, ninguna buena práctica de SQL te lleva a eso.
+
+Lo que te lleva a eso es entender el negocio. Y el negocio nunca te lo dice con esas palabras. Nadie del área de ventas te va a decir "necesito que congeles el precio en una copia inmutable". Te va a decir cosas como _"una factura no se puede cambiar"_ o _"si devuelvo, devuelvo lo que el cliente pagó"_. Tu trabajo es traducir eso a un modelo. A esa traducción, en DDD, se le llama **destilar el conocimiento** (_knowledge crunching_): sacar las reglas que el experto tiene en la cabeza pero no sabe explicar como código.
+
+Y la pista más grande estuvo ahí desde el principio, escondida a plena vista: el negocio **siempre** usó dos palabras distintas. Nunca dijo "la cosa esa de comprar". Dijo _carrito_ y dijo _pedido_. Dos nombres distintos porque son dos conceptos distintos.
+
+Cuando el código respeta esos nombres —cuando un carrito se llama carrito y un pedido se llama pedido, y cada uno hace lo que el negocio espera— estás hablando el **lenguaje ubicuo** (_ubiquitous language_): el mismo idioma entre el negocio y el código, sin traducciones que se pierden en el camino.
+
+Colapsar los dos en una sola tabla con un `estado` no fue solo un error técnico. Fue dejar de escuchar lo que el negocio venía diciendo todo el tiempo.
+
+## Entonces, ¿qué es el DDD?
+
+Fíjate en algo: en todo este recorrido no escribimos una sola línea de código. No apareció ningún `Entity`, ningún `Aggregate`, ningún `Repository`. Esos patrones existen y son útiles, pero son la parte fácil — y la última. Llegan después, como consecuencia de haber entendido el dominio.
+
+Lo que hicimos fue lo difícil: darnos cuenta de que dos cosas que parecían iguales no lo eran, y que la diferencia no estaba en la tabla sino en lo que el negocio necesitaba. Eso es DDD. No empieza en el código; empieza en una conversación.
+
+Y esa es la parte que casi nadie cuenta: lo más difícil del Domain-Driven Design no es aprender los patrones. Es aprender a escuchar un negocio que muchas veces ni el propio cliente sabe explicar del todo. El cliente te dice "una factura no se puede cambiar"; tu trabajo es oír, detrás de esa frase, "esto es un hecho inmutable".
+
+Sigo aprendiendo esto, y por eso lo escribo: la próxima vez que dos conceptos te parezcan "más o menos lo mismo", detente un segundo. Quizás el negocio ya te estaba diciendo, con dos palabras distintas, que no lo son.
