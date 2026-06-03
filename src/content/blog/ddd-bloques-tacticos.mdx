@@ -1,0 +1,152 @@
+---
+title: 'Ya entendiste el negocio. ¿Ahora cómo lo escribes? Los 4 bloques del DDD táctico'
+description: 'Value Object, Entity, Aggregate y Repository: los cuatro bloques con los que le das forma en código a lo que el negocio te dijo. Seguimos con el ejemplo del pedido.'
+date: 2026-06-03
+tags: ['DDD', 'Domain-Driven Design', 'Arquitectura', 'Patrones']
+draft: true
+---
+
+En el post anterior llegamos a una conclusión: un pedido es un **hecho**, y un hecho no se actualiza, se conserva. Por eso el pedido no podía _apuntar_ al precio del producto — tenía que guardar una **copia** congelada del precio del momento.
+
+Ahí lo dejamos, sin escribir una sola línea de código. Y cerré con una promesa: los patrones llegan después, como consecuencia. Bueno, este es el después.
+
+(Si no leíste el primero, no pasa nada: vas a poder seguir este igual. Pero el _porqué_ de todo esto está [acá](/blog/ddd-carrito-vs-pedido).)
+
+Porque ese precio congelado del que tanto hablamos no es una idea suelta. Tiene nombre. Se llama **Value Object**, y es el primero de los cuatro bloques con los que el DDD le da forma en código a lo que el negocio ya te había dicho. Vamos uno por uno, de adentro hacia afuera.
+
+## 1. Value Object: cuando lo único que importa es el valor
+
+Piensa en un billete de 100. ¿Te importa _cuál_ billete de 100 tienes? No. Un billete de 100 es intercambiable por cualquier otro billete de 100. Lo único que importa es el valor: 100.
+
+Eso es un **Value Object**: un objeto al que lo define su valor, no su identidad. No te preguntas "¿es _este_ precio o _aquel_ precio?". Dos precios de 100 dólares son, a todos los efectos, el mismo precio.
+
+```ts
+// Un Value Object: lo define su valor, no su identidad.
+class Dinero {
+  constructor(
+    public readonly monto: number,
+    public readonly moneda: string,
+  ) {}
+
+  equals(otro: Dinero): boolean {
+    return this.monto === otro.monto && this.moneda === otro.moneda;
+  }
+}
+```
+
+Fíjate en dos detalles, porque son toda la idea:
+
+- **Es inmutable** (`readonly`). No "cambias" un dinero: si necesitas otro monto, creas otro `Dinero`. Igual que no le tachas el número a un billete — agarras otro.
+- **Se compara por valor** (`equals`), no por referencia. `Dinero(100, 'USD')` es igual a cualquier otro `Dinero(100, 'USD')`.
+
+¿Reconoces algo? Ese es exactamente el precio que el pedido tenía que congelar. Inmutable y sin identidad propia: el candidato perfecto para vivir como una **copia** dentro del pedido. La dirección de envío, igual: una vez que el pedido salió, esa dirección es una foto fija, no un puntero a la libreta de direcciones del cliente que puede editar mañana.
+
+La pregunta que te dice si algo es un Value Object: **"si dos de estos tienen los mismos datos, ¿son lo mismo?"** Si la respuesta es sí, es un Value Object.
+
+## 2. Entity: cuando lo que importa es quién es, no qué tiene
+
+Ahora dale la vuelta a la pregunta. Un cliente cambia de email, se muda, cambia de teléfono. Le cambia _todo_. ¿Sigue siendo el mismo cliente?
+
+Claro que sí. Porque a un cliente no lo define su email ni su dirección: lo define **su identidad**. Eso es una **Entity**: algo que se mantiene siendo "el mismo" aunque sus datos cambien con el tiempo.
+
+```ts
+// Una Entity: la define su identidad, no sus datos.
+class Cliente {
+  constructor(
+    public readonly id: string, // esto NO cambia: es QUIÉN es
+    public email: string, // esto puede cambiar mañana
+  ) {}
+}
+```
+
+Aquí la pregunta del Value Object se rompe a propósito: dos clientes con el mismo email **no** son la misma persona — son dos cuentas distintas que por casualidad escribieron mal el correo. Lo que los distingue es el `id`, no los datos.
+
+Y el pedido del post anterior también es una Entity. Lo identifica su número (`#1001`), no su contenido. Dos pedidos con exactamente los mismos productos siguen siendo dos pedidos distintos, porque son dos hechos distintos que ocurrieron.
+
+La regla mental, entonces:
+
+| | Value Object | Entity |
+| --- | --- | --- |
+| Lo define | su valor | su identidad |
+| Si cambian sus datos | es otro | sigue siendo el mismo |
+| Ejemplo | el precio, la dirección | el cliente, el pedido |
+
+## 3. Aggregate: quién hace cumplir las reglas
+
+Tenemos las piezas. Pero un pedido no es una pieza suelta: es un cliente, varias líneas, cada línea con su precio congelado (Value Object), una dirección de envío (Value Object), un total. Y sobre todo eso hay **reglas que siempre tienen que cumplirse**:
+
+- Un pedido no puede existir sin al menos una línea.
+- El total tiene que ser, siempre, la suma de sus líneas.
+- Un pedido ya pagado no puede cambiar sus líneas.
+
+A esas reglas que siempre deben ser verdad, en DDD se les llama **invariantes**. ¿Y quién las hace cumplir? Si cualquier parte del código pudiera meter mano a una línea por su cuenta, el total dejaría de cuadrar y nadie se enteraría. Volveríamos al bug del post anterior, pero por otra puerta.
+
+La respuesta es el **Aggregate**: un grupo de entidades y value objects que se trata como **una sola unidad**, con una **raíz** (el `Pedido`) que es la única puerta de entrada. Nadie toca las líneas desde afuera; todo pasa por la raíz, y la raíz garantiza que las invariantes nunca se rompan.
+
+```ts
+// Un Aggregate: un grupo que se trata como UNA unidad.
+// El Pedido es la raíz: la única puerta de entrada.
+class Pedido {
+  private readonly lineas: LineaDePedido[];
+
+  // Nadie agrega una línea por su cuenta: pasa por la raíz,
+  // y la raíz decide si se puede.
+  agregarLinea(linea: LineaDePedido): void {
+    if (this.estado === 'pagado') {
+      throw new Error('Un pedido pagado no se modifica.');
+    }
+    this.lineas.push(linea);
+  }
+
+  // El total no es un campo que alguien actualiza a mano:
+  // es la invariante, calculada por la raíz.
+  get total(): Dinero {
+    return this.lineas.reduce(
+      (acc, l) => acc.sumar(l.subtotal),
+      new Dinero(0, 'USD'),
+    );
+  }
+}
+```
+
+La clave está en `private readonly lineas`. Las líneas no se exponen para que cualquiera las modifique. La frontera del aggregate es justamente eso: una pared que dice _"si quieres cambiar algo aquí dentro, me lo pides a mí, y yo me encargo de que las reglas se cumplan"_.
+
+## 4. Repository: guardar y traer el pedido entero
+
+Última pieza, y la más de afuera. El aggregate vive como una unidad en memoria... pero en algún momento hay que guardarlo en una base de datos y volverlo a traer. ¿Y cómo lo guardas sin romper todo lo anterior?
+
+La tentación es guardar las líneas por un lado, el pedido por otro, el total en una columna. Y ahí, otra vez, se cuela el bug: alguien actualiza una línea y se olvida del total. El aggregate era una unidad; lo partimos en pedazos al guardarlo.
+
+El **Repository** es el patrón que evita eso. Te da la ilusión de una colección de aggregates en memoria: le pides un pedido por su id y te lo devuelve **entero**, con sus líneas y sus precios congelados; le entregas un pedido y lo guarda **entero**.
+
+```ts
+// Un Repository: guarda y trae el AGGREGATE completo.
+// El dominio no sabe que detrás hay SQL, tablas ni JOINs.
+interface PedidoRepository {
+  guardar(pedido: Pedido): Promise<void>;
+  buscarPorId(id: string): Promise<Pedido | null>;
+}
+```
+
+Dos cosas que hace por ti:
+
+- **Trata el aggregate como una unidad.** Guardas un `Pedido`, no "filas de líneas". Las invariantes que la raíz protegía en memoria siguen protegidas al persistir.
+- **Esconde la base de datos.** Tu dominio habla de pedidos, no de tablas ni de `JOIN`s. El día que cambies de Postgres a otra cosa, el pedido ni se entera.
+
+Y aquí es donde la copia del precio del post anterior por fin toca el disco: el repository escribe el precio congelado en las propias filas del pedido, no una referencia a la tabla de productos. La decisión de negocio que descubrimos hablando, hecha código y hecha dato.
+
+## El esqueleto, de adentro hacia afuera
+
+Mira el camino que hicimos, porque el orden no fue casual:
+
+- El **Value Object** vive **dentro** de la Entity (el precio dentro de la línea).
+- La **Entity** vive **dentro** del Aggregate (la línea dentro del pedido).
+- El **Aggregate** se guarda con un **Repository**.
+
+De la pieza más chica a la frontera, y de la frontera a la persistencia. Esos cuatro son el **esqueleto** del DDD táctico: con ellos le diste forma en código a lo que en el post anterior solo era una conversación con el negocio.
+
+Pero un esqueleto no se mueve. Hasta ahora el pedido solo _existe_: tiene datos, tiene reglas, se guarda. Todavía no **hace** nada ni le **avisa** nada a nadie. ¿Qué pasa cuando un pedido se confirma y hay que descontar stock, mandar un correo, avisarle a facturación? Eso ya no entra en una entidad sola — es comportamiento que vive entre varias, y es reacción a algo que ocurrió.
+
+Para eso hay otros tres patrones —Domain Service, Domain Event y Factory— que son el **músculo**: aparecen cuando el dominio empieza a moverse. Pero esos los dejamos para el próximo, igual que dejé este enganchado al anterior.
+
+Sigo aprendiendo esto y por eso lo escribo: los patrones no son la meta, son la consecuencia. Primero entiendes el negocio; recién después eliges con cuál de estos bloques lo escribes.
