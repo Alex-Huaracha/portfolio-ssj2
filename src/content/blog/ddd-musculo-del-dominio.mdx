@@ -1,0 +1,131 @@
+---
+title: 'El esqueleto ya está armado. ¿Ahora cómo lo haces moverse? El músculo del DDD táctico'
+description: 'Domain Service, Domain Event y Factory: los tres patrones que aparecen cuando el dominio deja de solo existir y empieza a actuar. Cerramos la serie con el mismo pedido.'
+date: 2026-06-04
+tags: ['DDD', 'Domain-Driven Design', 'Arquitectura', 'Patrones']
+draft: true
+---
+
+En el post anterior armamos el esqueleto: Value Object, Entity, Aggregate y Repository. Con esos cuatro bloques, el pedido ya tiene datos, tiene reglas y se puede guardar. Existe.
+
+Pero un esqueleto no se mueve. Hasta ahora el pedido solo _está_ ahí: no **hace** nada ni le **avisa** nada a nadie. Y un negocio real se mueve todo el tiempo.
+
+(Si no leíste los anteriores, este se sostiene solo. Pero la base está [acá](/blog/ddd-bloques-tacticos), y el porqué de todo, [aún más atrás](/blog/ddd-carrito-vs-pedido).)
+
+Cerré el post pasado con una escena: un pedido se confirma, y de golpe hay que descontar stock, mandar un correo, avisarle a facturación. Empecemos justo ahí, porque en esa sola escena viven los tres patrones que faltan —Domain Service, Domain Event y Factory—, el **músculo** que hace mover al esqueleto.
+
+## 1. Domain Service: la lógica que no es de nadie
+
+Confirmar un pedido suena a que debería ser un método del pedido: `pedido.confirmar()`. Y en parte lo es. Pero hay una regla que se mete en el camino: **no puedes confirmar un pedido si no hay stock.**
+
+¿De quién es esa regla? El stock no vive en el pedido: vive en el inventario, que es otro aggregate. Y en el post anterior fuimos claros: la frontera de un aggregate es una pared, no metes mano en otro desde afuera. Si el pedido tuviera que revisar el inventario, estaría rompiendo esa pared.
+
+Pero tampoco es una regla del inventario, que no tiene por qué saber qué es un pedido.
+
+La regla **vive entre los dos**. No es de nadie. Y para esa lógica que no pertenece a una sola entidad existe el **Domain Service**: una operación de negocio que coordina varias piezas sin ser dueña de ninguna.
+
+```ts
+// Un Domain Service: una operación de negocio que no es
+// de una sola entidad, porque vive ENTRE varias.
+class ConfirmacionDePedido {
+  constructor(private readonly inventario: Inventario) {}
+
+  confirmar(pedido: Pedido): void {
+    // "No se confirma un pedido sin stock" no es una regla
+    // del Pedido ni del Inventario: vive entre los dos.
+    if (!this.inventario.hayStockPara(pedido)) {
+      throw new Error('No hay stock para confirmar el pedido.');
+    }
+    this.inventario.reservar(pedido);
+    pedido.confirmar(); // el pedido cambia su propio estado
+  }
+}
+```
+
+Fíjate en un detalle: el servicio **no tiene datos propios**. No guarda estado, solo coordina. Esa es la prueba del Domain Service: si te descubres con un servicio lleno de campos, probablemente sea una Entity disfrazada.
+
+Y un aviso, porque este patrón es el más fácil de abusar: el Domain Service **no es el cajón de sastre** donde tiras toda la lógica. Si todo termina en servicios y tus entidades quedan como meras bolsas de datos sin comportamiento, no hiciste DDD: hiciste un **modelo anémico**. El servicio es para lo que genuinamente no es de ninguna entidad. Nada más.
+
+## 2. Domain Event: avisar que algo pasó, sin saber quién escucha
+
+Ya confirmamos el pedido. El stock está reservado. Pero la escena no terminó: hay que mandar el correo de confirmación, avisarle a facturación, sumarle puntos de fidelidad al cliente.
+
+La tentación es obvia: metamos todo eso en el `ConfirmacionDePedido`. Y funciona... hasta que la semana que viene piden "ahora también avisar a logística", y el mes siguiente "y a analítica". Ese método crece sin parar, y termina conociendo el correo, la facturación, la fidelidad, la logística. Una sola operación que sabe demasiado.
+
+Pero piénsalo: al pedido, ¿de verdad le importa quién manda el correo? No. Al pedido solo le pasó **una cosa**: se confirmó. Punto. Quién reacciona a eso, y cómo, no es su problema.
+
+Eso es un **Domain Event**: un objeto que representa **un hecho que ya ocurrió**. Y aquí vuelve, calcadita, la idea del primer post: un pedido es un hecho en pasado. Los eventos también lo son. Por eso se nombran en pasado —`PedidoConfirmado`, no `ConfirmarPedido`—: describen algo que ya pasó y no se deshace.
+
+```ts
+// Un Domain Event: un hecho que ya ocurrió. Inmutable,
+// y nombrado en pasado: "Confirmado", no "Confirmar".
+class PedidoConfirmado {
+  constructor(
+    public readonly pedidoId: string,
+    public readonly ocurridoEn: Date,
+  ) {}
+}
+```
+
+El pedido emite ese evento y se desentiende. Del otro lado, cada interesado se suscribe por su cuenta: uno manda el correo, otro avisa a facturación, otro suma los puntos. Ninguno sabe de los demás, y el pedido no sabe de ninguno.
+
+¿La ganancia? El día que pidan "avisar también a logística", no tocas el pedido ni el servicio de confirmación: agregas **un suscriptor nuevo** y listo. Las reacciones crecen por fuera, sin manosear el corazón del dominio.
+
+Cuidado con confundir estos dos últimos, porque van pegados:
+
+| | Domain Service | Domain Event |
+| --- | --- | --- |
+| Responde a | "¿quién ejecuta esta lógica que no es de nadie?" | "¿quién reacciona a lo que ya pasó?" |
+| Tiempo | presente: una acción que ocurre ahora | pasado: un hecho que ya ocurrió |
+| Acopla | coordina, conoce lo que toca | desacopla: no sabe quién lo escucha |
+
+## 3. Factory: nacer bien desde el primer segundo
+
+Una última pregunta, y es la que cierra todo: este pedido que venimos confirmando y del que venimos hablando hace tres posts... ¿de dónde salió?
+
+En el primero lo dijimos sin querer: el pedido **nace de un carrito confirmado**, copiando los precios del momento para congelarlos. ¿Pero dónde, exactamente, ocurre esa copia?
+
+Armar un pedido válido a partir de un carrito no es un `new Pedido()` y ya. Es un proceso: recorrer las líneas del carrito, sacarle una **foto** al precio de cada producto _ahora_ (crear los Value Objects), verificar que haya al menos una línea, generar el id. Si dejas que cualquier rincón del código arme el pedido a mano, tarde o temprano alguien lo arma a medias —se olvida de congelar el precio— y el pedido nace roto. El bug del primer post, otra vez, por la puerta de atrás.
+
+La **Factory** es el patrón que evita eso: el único lugar autorizado a dar a luz un aggregate, garantizando que nazca válido y completo.
+
+```ts
+// Una Factory: el único lugar que sabe armar un Pedido
+// válido. Aquí, por fin, se congela el precio.
+class FabricaDePedidos {
+  static desdeCarrito(carrito: Carrito): Pedido {
+    const lineas = carrito.items.map(
+      (item) =>
+        new LineaDePedido(
+          item.productoId,
+          // la FOTO del precio de hoy: una copia, no un puntero
+          new Dinero(item.producto.precioActual, 'USD'),
+          item.cantidad,
+        ),
+    );
+
+    if (lineas.length === 0) {
+      throw new Error('Un carrito vacío no se convierte en pedido.');
+    }
+
+    return new Pedido(generarId(), lineas);
+  }
+}
+```
+
+Y aquí se cierra el círculo de toda la serie. Ese `new Dinero(item.producto.precioActual)` es el instante exacto donde la decisión de negocio del primer post se vuelve realidad. La factura que cambiaba sola no se arregla en el código de pagos, ni en la base de datos, ni con un buen `JOIN`: se arregla **acá**, en el segundo en que el carrito se convierte en pedido y le saca la foto al precio. La Factory es el guardián de ese instante.
+
+## El cuerpo completo
+
+Mira el camino entero, porque ya está todo:
+
+- **El esqueleto** (post anterior): Value Object, Entity, Aggregate, Repository. El pedido _existe_.
+- **El músculo** (este): Domain Service, Domain Event, Factory. El pedido **nace** bien, **actúa** y **avisa** que actuó.
+
+Siete patrones. Ese es, en lo esencial, el DDD táctico completo: la caja de herramientas con la que le das forma en código a un dominio.
+
+Pero fíjate en algo, porque es la misma idea con la que abrimos toda esta serie: en ningún momento empezamos por el patrón. Empezamos por "un carrito no es un pedido". Por "un hecho no se actualiza, se conserva". Por "esto se confirma y hay que avisarle a alguien". El patrón siempre llegó **después**, como respuesta a una necesidad que el negocio ya tenía. Nunca al revés.
+
+Y todo esto vivió dentro de un solo dominio: el de los pedidos. El día que tu sistema crezca y tenga también envíos, soporte, facturación —cada uno con su propio idioma, donde quizá "pedido" signifique algo distinto en cada rincón— vas a necesitar otra caja de herramientas, una que ya no es para escribir código sino para dibujar fronteras. Eso es el DDD **estratégico**. Pero esa, de verdad, es otra conversación.
+
+Sigo aprendiendo esto, y por eso lo escribo: los patrones nunca fueron la meta. Aprende a escuchar el negocio primero; el patrón correcto, casi siempre, ya estaba esperándote del otro lado.
